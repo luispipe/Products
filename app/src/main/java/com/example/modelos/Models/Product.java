@@ -5,13 +5,14 @@ import java.util.Date;
 
 public class Product {
     //Atributos
-    String identifier, name, brand, provider;
+    String identifier, name, brand;
+
+    String provider;
     double price;
     Date expiritProduct;
 
     //Metodos
     //Constructor
-
 
     public Product(String identifier, String name, String brand, String provider, double price, Date expiritProduct) {
         this.identifier = identifier;
@@ -21,6 +22,7 @@ public class Product {
         this.price = price;
         this.expiritProduct = expiritProduct;
     }
+
 
     //Comportamientos de consulta y modificación o actualización
 

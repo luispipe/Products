@@ -11,6 +11,12 @@ import android.widget.TextView;
 
 import com.example.modelos.Models.Product;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -60,24 +66,11 @@ public class MainActivity extends AppCompatActivity {
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SimpleDateFormat format= new SimpleDateFormat("dd/MM/yyyy");
                 try {
-                    date= format.parse(expirit.getText().toString());
-                } catch (ParseException e) {
+                    modelSave();
+                } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                double pricePro= Double.parseDouble(price.getText().toString());
-
-                Log.i("id", id.getText().toString());
-                Log.i("name", name.getText().toString());
-                Log.i("brand", brand.getText().toString());
-                Log.i("provider", provider.getText().toString());
-                Log.i("price", pricePro+"");
-                Log.i("expirit", date.toString());
-
-             Product pro = new Product(id.getText().toString(),name.getText().toString(),
-                        brand.getText().toString(),provider.getText().toString(),pricePro,date);
-                listProduct.put(id.getText().toString(),pro);
             }
         });
 
@@ -90,12 +83,42 @@ public class MainActivity extends AppCompatActivity {
                 +"Fecha de Vencimiento: "+showPro.getExpiritProduct());
             }
         });
-
-
-
-
         //  Product yogurt= new Product("L23","yogurt Fernando","Celema","Lacteos SA",8500.0,"01/08/2023");
+    }
+    public void modelSave() throws IOException {
+       SimpleDateFormat format= new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            date= format.parse(expirit.getText().toString());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        double pricePro= Double.parseDouble(price.getText().toString());
 
+
+       String save= "{\"Id\":\""+id.getText().toString()+"\"\n\"Name\":\""+
+                name.getText().toString()+"\"\n\"Brand\":\""+brand.getText().toString()+
+                "\"\nProvider\":\""+provider.getText().toString()+"\"\nPrice\":\""+
+                pricePro+"\"\n\"Date\":\""+date+"\"}";
+
+        try {
+            //Crear archivo
+            File file= new File(getFilesDir(),"Producto.json");
+            if (!file.exists()){
+                file.createNewFile();
+            }
+            //Escribir archivo
+            FileWriter writer= new FileWriter(file,true);
+            writer.write(save);
+            writer.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+        /*
+        Writer fileWriter = Files.newBufferedWriter(getFilesDir().toPath(), StandardCharsets.UTF_8);
+        fileWriter.write(save);*/
 
 
     }
