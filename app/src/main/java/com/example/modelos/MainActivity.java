@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.modelos.Models.Product;
 
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.DateFormat;
@@ -67,7 +69,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
+
+
                     modelSave();
+                    Toast.makeText(getApplicationContext(),"The product was created",Toast.LENGTH_LONG).show();
+                    reset();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -105,21 +111,60 @@ public class MainActivity extends AppCompatActivity {
             File file= new File(getFilesDir(),"Producto.json");
             if (!file.exists()){
                 file.createNewFile();
+                FileWriter writer= new FileWriter(file,true);
+                writer.write(save);
+                writer.close();
             }
-            //Escribir archivo
-            FileWriter writer= new FileWriter(file,true);
-            writer.write(save);
-            writer.close();
+            //Se sobreescribe el archivo en vez de almacenarse el nuevo producto
+            else{
+                FileWriter writer= new FileWriter(file,false);
+                writer.write(save);
+                writer.close();
+            }
 
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
 
+    public void reset(){
+        id.setText("");
+        name.setText("");
+        brand.setText("");
+        provider.setText("");
+        price.setText("");
+        expirit.setText("");
+    }
 
-        /*
-        Writer fileWriter = Files.newBufferedWriter(getFilesDir().toPath(), StandardCharsets.UTF_8);
-        fileWriter.write(save);*/
+    public void validateData(){
+        if (id.getText().toString().isEmpty()){
+            Toast.makeText(MainActivity.this,"Id is required, please enter one data",Toast.LENGTH_LONG).show();
+        }
+        if (name.getText().toString().isEmpty()){
+            Toast.makeText(MainActivity.this,"Name is required, please enter one data",Toast.LENGTH_LONG).show();
+        }
+        if (brand.getText().toString().isEmpty()){
+            Toast.makeText(MainActivity.this,"Brand is required, please enter one data",Toast.LENGTH_LONG).show();
+        }
+        if (provider.getText().toString().isEmpty()){
+            Toast.makeText(MainActivity.this,"Provider is required, please enter one data",Toast.LENGTH_LONG).show();
+        }
+        if (price.getText().toString().isEmpty()){
+            Toast.makeText(MainActivity.this,"Price is required, please enter one data",Toast.LENGTH_LONG).show();
+        }
+        if (expirit.getText().toString().isEmpty()){
+            Toast.makeText(MainActivity.this,"Expirit is required, please enter one data",Toast.LENGTH_LONG).show();
+        }
+        if (Double.parseDouble(price.getText().toString())<0){
+            Toast.makeText(MainActivity.this,"The price must be a positive number",Toast.LENGTH_LONG).show();
+        }
+        if (expirit.getText().toString().equals("%/%/%/")){
+            String [] dateNumber= expirit.getText().toString().split("/",3);
+            if(Integer.parseInt(dateNumber[1])>12 ||Integer.parseInt(dateNumber[1])<0 ){
+                Toast.makeText(MainActivity.this,"Incorrect Date",Toast.LENGTH_LONG).show();
+            }
 
+        }
 
     }
 }
